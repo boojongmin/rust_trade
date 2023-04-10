@@ -75,16 +75,28 @@ async fn loop_ws_work(lock: ArStream, lock_tx: ArTx) {
     }
 }
 
-pub fn spawn_rx_and_add_close_price(rx_lock: ArRx, candle_lock: AR<Ohlcs>) {
+pub fn spawn_rx_and_add_close_price(rx_lock: ArRx, candle_lock: AR<Ohlcs>) -> Receiver<f64> {
+    let (tx, rx) = tokio::sync::mpsc::channel(32);
     tokio::spawn(async move {
         let mut rx = rx_lock.write().await;
+        let mut before_price = 0.0;
         while let Some(msg) = rx.recv().await {
             match serde_json::from_str::<WsResponse<MarketPrice>>(msg.as_str()) {
                 Ok(v) => {
                     if let Ok(v) = v.data.get(0).unwrap().price.parse::<f64>() {
                         let mut candle = candle_lock.write().await;
-                        candle.add_close(v).await;
+                        candle.add_close_price_and_insert_db(v.clone()).await;
+
+                        if before_price != v {
+                            before_price = v.clone();
+                            match tx.send(v.clone()).await {
+                                Ok(_) => {}
+                                Err(v) => println!("{:?}, {:?}", before_price, v),
+                            }
+                        }
                     }
+
+                    
                 }
                 Err(e) => {
                     println!("error: {:?} / {}", e, msg.as_str());
@@ -92,6 +104,7 @@ pub fn spawn_rx_and_add_close_price(rx_lock: ArRx, candle_lock: AR<Ohlcs>) {
             }
         }
     });
+    return rx
 
 }
 

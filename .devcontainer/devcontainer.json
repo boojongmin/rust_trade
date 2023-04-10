@@ -1,0 +1,23 @@
+{
+	"name": "rust simple",
+	"dockerComposeFile": ["docker-compose.yml"],
+	"service": "work",
+	"workspaceFolder": "/workspace",
+	"remoteUser": "root",
+	"shutdownAction": "stopCompose",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"rust-lang.rust-analyzer",
+				"JScearcy.rust-doc-viewer",
+				"ms-vscode.anycode-rust",
+				"formulahendry.code-runner",
+				"ms-vscode.cpptools",
+				"uyiosa-enabulele.reopenclosedtab",
+				"dustypomerleau.rust-syntax",
+				"bungcip.better-toml"
+			]
+		}
+	},
+	"postCreateCommand": "apk add --no-cache musl-dev openssl-dev git;rustup update;rustup component add rustfmt;rustup component add clippy;"
+}
