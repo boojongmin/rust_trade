@@ -34,6 +34,9 @@ impl Ohlcs {
             self.closes.push(price);
             self.min = min;
             println!("{:?}", self.closes);
+        } else {
+            let i = self.closes.len() -1;
+            self.closes[i - 1] = price;
         }
     }
 }
