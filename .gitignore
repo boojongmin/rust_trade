@@ -1,3 +1,5 @@
-/target
-/Cargo.lock
-
+Cargo.lock
+*_generated.rs
+target/
+.idea/
+.vscode/

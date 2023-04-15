@@ -1,2 +1,3 @@
 [workspace]
-members = ["bot", "db"]
+members = ["preprocessing", "lib"]
+# members = ["bot", "db", "preprocessing"]

@@ -1,0 +1,10 @@
+[package]
+name = "flatbuffers"
+version = "0.0.0"
+workspace = "../"
+edition = "2021"
+publish = false
+
+[dependencies]
+preprocessing = { path = "../../preprocessing"}
+lib = { path = "../../lib"}
